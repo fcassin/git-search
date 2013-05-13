@@ -1,0 +1,16 @@
+@(contributors: Seq[play.api.libs.json.JsValue])
+
+@import play.api.libs.json._
+
+@main("GitSearch") {
+	@if(contributors != null) {
+		<div>Contributors found</div>
+		<ul>
+			@for(c <- contributors) {
+				<li>@((c \ "login").asOpt[String])</li>
+			}
+		</ul>
+	} else {
+
+	}
+}

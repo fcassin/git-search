@@ -1,0 +1,53 @@
+@(title: String)(content: Html)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@title</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/reset.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <script src="@routes.Assets.at("javascripts/jquery-2.0.0.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/d3.v3.js")" type="text/javascript"></script>
+    </head>
+    <body>
+        <header class="navigation">
+    	    <aside class="title"><a href="/">GitSearch</a></aside>
+		    <form action="/repositories/search">
+			    <label for="searchQuery">Search a repository:</label>
+			    <input type="texte" id="searchQuery" name="searchQuery" class="search"/>
+			    <input type="submit" value="Search" />
+		    </form>
+        </header>
+        <section class="content">
+            @content
+        </section>
+        <div class="clear"></div>
+        <footer>
+            <div class="wrapper">
+                <session class="tools">
+                    <p>This site was developed using the following tools:</p>
+                    <ul>
+                        <li><a href="http://www.playframework.com/">Play! Framework</a></li>
+                        <li><a href="https://github.com/">GitHub</a></li>
+                        <li><a href="http://d3js.org/">d3js</a>
+                        <li><a href="http://meyerweb.com/eric/tools/css/reset/">Reset CSS</a></li>
+                        <li><a href="https://github.com/guillaumebort/play2-sublimetext2">play2-sublimetext2</a></li>
+                    </ul>
+                </session>
+                <session class="todo">
+                    <p>Some stuff I've not yet implemented that I'd like to do:</p>
+                    <ul>
+                        <li>Responsive Web Design</li>
+                        <li>Different commit timeline</li>
+                        <li>Color change based on number of commits on a given day</li>
+                        <li>date.onClick: commiters list</li>
+                        <li>date.onClick: commits hours</li>
+                    </ul>
+                </session>
+            </div>
+        </footer>
+        <div class="clear"></div>
+    </body>
+</html>

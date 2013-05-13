@@ -1,0 +1,330 @@
+html {
+	position: absolute;
+	width: 100%;
+	font-size: 18px;
+
+	color: #333;
+
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	letter-spacing: -1px;
+}
+
+header.navigation {
+	position: relative;
+	display: block;
+
+	z-index: 1;
+	height: 80px;
+	width: 100%;
+	border-top: 5px solid #92d13d;
+	box-shadow: 0 0 5px rgba(0,0,0,0.2);
+
+	clear: both;
+}
+
+header.navigation aside.title a {
+	display: block;
+	position: relative;
+	float: left;
+
+	width: 20%;
+	font-size: 2em;
+	font-style: italic;
+	color: #333;
+
+	text-decoration: none;
+
+	padding: 22px 10%;
+}
+
+header.navigation form {
+	display: block;
+	position: relative;
+	float: right;
+	
+	width: 50%;
+	padding: 26px 0px;
+}
+
+header.navigation form label {
+	display: block;
+	position: relative;
+	float: left;
+
+	padding: 4px 6px;
+	font-size: 1.25em;
+	text-align: right
+}
+
+header.navigation form input.search {
+	padding: 4px;
+
+	border: solid 2px #92d13d;
+}
+
+section.content {
+	position: relative;
+	display: block;
+
+	margin: 0 auto;
+	width: 80%;
+
+	clear: both;
+}
+
+ul.repositories {
+	position: relative;
+	display: block;
+	width: 100%;
+
+	padding-top: 6px;
+
+	clear: both;
+}
+
+li.repository {
+	display: block;
+	float: left;
+	width: 30%;
+
+	margin: 6px;
+	
+	box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+
+	height: 150px;
+	text-overflow: ellipsis;
+}
+
+li.repository a {
+	position: relative;
+	display: block;
+	background: #92d13d;
+	font-size: 1.5em;
+	padding: 6px;
+
+	text-decoration: none;
+	color: white;
+
+	overflow: hidden;
+}
+
+li.repository p.owner {
+	display: block;
+	float: right;
+	clear: both;
+	font-style: italic;
+	color: #DDD;
+	margin-top: -2em;
+	position: relative;
+	padding: 8px;
+}
+
+li.repository p.description {
+	padding: 6px;
+	min-height: 78px;
+}
+
+li.repository ul.stats {
+	padding-right: 6px;
+}
+
+li.repository ul.stats li.followers {
+	display: block;
+	float: right;
+	font-size: 0.75em;
+	padding: 0px 6px;
+}
+
+li.repository ul.stats li.forks {
+	display: block;
+	float: right;
+	font-size: 0.75em;
+	padding: 0px 6px;
+}
+
+footer {
+	position: relative;
+	display: block;
+	width: 100%;
+
+	margin-top: 12px;
+	color: white;
+	background-color: #343434;
+	clear: both;
+}
+
+footer div.wrapper {
+	position: relative;
+	display: inline-block;
+
+	width: 80%;
+	margin: 0 10%;
+
+	color: #ddd;
+
+	clear: both;
+}
+
+footer ul {
+	padding: 12px;
+}
+
+footer ul li {
+	padding: 6px 18px;
+	text-decoration: none;
+}
+
+footer ul li a {
+	color: #ddd;
+}
+
+footer session.tools {
+	position: relative;
+	display: block;
+	float: left;
+	width: 40%;
+	padding: 4.9%;
+}
+
+footer session.todo {
+	position: relative;
+	display: block;
+	float: left;
+	width: 40%;
+	padding: 4.9%;
+}
+
+div.clear {
+	clear: both;
+}
+
+div.hidden {
+	display: none;
+}
+
+div.repository {
+	display: block;
+	float: left;
+	width: 100%;
+
+	margin: 18px;
+	
+	box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+
+	text-overflow: ellipsis;
+}
+
+div.repository a {
+	position: relative;
+	display: block;
+	background: #92d13d;
+	font-size: 1.5em;
+	padding: 6px;
+
+	text-decoration: none;
+	color: white;
+
+	overflow: hidden;
+}
+
+ul.paginationTabs {
+	display: inline-block;
+	width: 96%;
+
+	margin: 2%;
+	border-bottom: 1px solid #ccc;
+
+	clear: both;
+}
+
+ul.paginationTabs li {
+	display: block;
+	float: left;
+	padding: 6px 18px;
+	margin: 0px 6px;
+	top: 1px;
+	background: white;
+	position: relative;
+
+	border-left: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+
+ul.paginationTabs li.active {
+	border-bottom: 1px solid white;
+}
+
+ul.paginationTabs li.inactive {
+	background: #eee;
+	border-bottom: 1px solid #ccc;
+}
+
+ul.commiters {
+	display: inline-block;
+	width: 95%;
+
+	margin: 0 2.5%;
+	margin-bottom: 15px;
+}
+
+ul.commiters li.commiter {
+	display: block;
+	float: left;
+	width: 21%;
+	height: 22px;
+
+	margin: 1%;
+	padding: 1%;
+	
+	box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+}
+
+ul.commiters li.commiter img {
+	position: relative;
+	height: 36px;
+	top: -8px;
+	left: -6px;
+
+	display: block;
+	float: left;
+}
+
+ul.commiters li.commiter span {
+	display: block;
+	width: 80%;
+
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 2em;
+	padding: 0px 3px;
+	top: -6px;
+	position: relative;
+}
+
+ul.commiters li.commiter span p {
+	font-size: 0.75em;
+}
+
+.day {
+  fill: #fff;
+  stroke: #ccc;
+}
+
+.month {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
+
+.RdYlGn .q0-11{fill:rgb(165,0,38)}
+.RdYlGn .q1-11{fill:rgb(215,48,39)}
+.RdYlGn .q2-11{fill:rgb(244,109,67)}
+.RdYlGn .q3-11{fill:rgb(253,174,97)}
+.RdYlGn .q4-11{fill:rgb(254,224,139)}
+.RdYlGn .q5-11{fill:rgb(255,255,191)}
+.RdYlGn .q6-11{fill:rgb(217,239,139)}
+.RdYlGn .q7-11{fill:rgb(166,217,106)}
+.RdYlGn .q8-11{fill:rgb(102,189,99)}
+.RdYlGn .q9-11{fill:rgb(26,152,80)}
+.RdYlGn .q10-11{fill:rgb(0,104,55)}

@@ -1,0 +1,297 @@
+@(repository: play.api.libs.json.JsValue, owner: String, repo: String)
+
+@import play.api.libs.json._
+
+@main("GitSearch") {
+	<div class="repository">
+		<a>@((repository \ "name").asOpt[String])</a>
+		<ul class="paginationTabs">
+			<li id="commitersListTab" class="commitersListTab active">Commiters list</li>
+			<li id="recentCommitersTab" class="recentCommitersTab inactive">Recent commiters</li>
+			<li id="recentCommitsTab" class="recentCommitsTab inactive">Recent commits</li>
+		</ul>
+
+		<div class="clear"></div>
+
+		<div id="commitersList" class="commitersList">Loading commiters</div>
+		<div id="recentCommiters" class="recentCommiters hidden">Loading commits</div>
+		<div id="recentCommits" class="recentCommits hidden">Loading commits</div>
+	</div>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var url = '/repositories/@owner/@repo/contributors.json';
+			var commitersData = null;
+			var commitsData = null;
+
+			commitersListDiv = $('#commitersList', document);
+			recentCommitersDiv = $('#recentCommiters', document);
+			recentCommitsDiv = $('#recentCommits', document);
+
+			commitersListLi = $('#commitersListTab', document);
+			recentCommitersLi = $('#recentCommitersTab', document);
+			recentCommitsLi = $('#recentCommitsTab', document);
+
+			$("li#commitersListTab", document).click(function() {
+				commitersListDiv.removeClass("hidden");
+				recentCommitersDiv.addClass("hidden");
+				recentCommitsDiv.addClass("hidden");
+
+				commitersListLi.removeClass("inactive");
+				commitersListLi.addClass("active");
+				recentCommitersLi.addClass("inactive");
+				recentCommitsLi.addClass("inactive");
+
+				getCommitersList();
+			});
+
+			$("li#recentCommitersTab", document).click(function() {
+				commitersListDiv.addClass("hidden");
+				recentCommitersDiv.removeClass("hidden");
+				recentCommitsDiv.addClass("hidden");
+
+				commitersListLi.addClass("inactive");
+				recentCommitersLi.addClass("active");
+				recentCommitersLi.removeClass("inactive");
+				recentCommitsLi.addClass("inactive");
+
+				getCommitersRole();
+			});
+
+			$("li#recentCommitsTab", document).click(function() {
+				commitersListDiv.addClass("hidden");
+				recentCommitersDiv.addClass("hidden");
+				recentCommitsDiv.removeClass("hidden");
+
+				commitersListLi.addClass("inactive");
+				recentCommitersLi.addClass("inactive");
+				recentCommitsLi.addClass("active");
+				recentCommitsLi.removeClass("inactive");
+
+				getCommitsDate();
+			});
+
+			function displayCommitersList(data) {
+				var fragment = document.createElement('ul');
+				$(fragment).addClass('commiters');
+				$(data).each(function(index, commiter) {
+					var commiterDiv = document.createElement('li');
+					var commiterImage = document.createElement('img');
+					var commiterSpan = document.createElement('span');
+					var commiterP = document.createElement('p');
+					commiterImage.src = commiter.avatar_url;
+					commiterSpan.innerHTML = commiter.login;
+					commiterP.innerHTML = commiter.contributions + ' contributions';
+					$(commiterSpan).append(commiterP);
+					$(commiterDiv).append(commiterImage);
+					$(commiterDiv).append(commiterSpan);
+					$(commiterDiv).addClass('commiter');
+
+					fragment.appendChild(commiterDiv);
+				});
+				commitersListDiv.html('');
+				commitersListDiv.html(fragment);
+			}
+
+			function getCommitersList() {
+				if (commitersData != null) {
+					displayCommitersList(commitersData);
+				} else {
+					$.get(url, function(data) {
+						commitersData = data;
+						displayCommitersList(data);
+					});
+				}
+			}
+
+			function displayCommitersRole(data) {
+				var numberOfCommits = data.length;
+				var nest = d3.nest()
+					.key(function(d) {return d.commit.committer.email; })
+					.entries(data);
+
+				nest.sort(function(a, b) {
+					return b.values.length - a.values.length;
+				});
+
+				var barHeight = 40;
+				var height = (barHeight + 10) * nest.length;
+				var width = 800;
+				var offset = 200;
+
+				var y = d3.scale.linear().domain([0, nest.length]).range([0, height]);
+				var x = d3.scale.linear().domain([0, d3.max(nest, function(keyValues) { return keyValues.values.length; })]).
+  					rangeRound([0, width]);
+
+  				$("#recentCommiters").html('');
+  				var commits = d3.select("#recentCommiters").
+  					append("svg:svg").
+ 					attr("width", width + offset).
+  					attr("height", height);
+
+  				commits.selectAll("rect").
+				  data(nest).
+				  enter().
+				  append("svg:rect").
+				  //attr("x", width).
+				  attr("x", offset).
+				  attr("y", function(keyValues, index) { return y(index); }).
+				  attr("height", barHeight).
+				  attr("width", 0).
+				  attr("fill", "#92d13d");
+
+				commits.selectAll("text").
+				  data(nest).
+				  enter().
+				  append("svg:text").
+				  attr("x", function(keyValues) { return offset + x(keyValues.values.length); }).
+				  attr("y", function(keyValues, index) { return y(index) + barHeight; }).
+				  attr("dx", function(keyValues) { return - 10 * keyValues.values.length.toString().length;}).
+				  attr("dy", -barHeight / 3).
+				  attr("text-anchor", "middle").
+				  text(function(keyValues) { return keyValues.values.length;}).
+				  attr("fill", "white");
+
+				commits.selectAll("text.xAxis").
+				  data(nest).
+				  enter().append("svg:text").
+				  attr("x", 0).
+				  attr("y", function(datum, index) { return y(index) + barHeight; }).
+				  attr("dy", -barHeight / 3).
+				  attr("text-anchor", "end").
+				  attr("style", "font-size: 16; font-family: Helvetica, sans-serif").
+				  text(function(keyValues) { return keyValues.values[0].author != null ? keyValues.values[0].author.login : keyValues.values[0].commit.author.name;}).
+				  attr("transform", "translate(180, 0)").
+				  attr("class", "xAxis");
+
+				commits.selectAll("rect").
+				  transition().
+				  duration(1000).
+				  attr("width", function(keyValues) { return x(keyValues.values.length); });
+			}
+
+			function getCommitersRole() {
+				if (commitsData != null) {
+					displayCommitersRole(commitsData);
+				} else {
+					$.get(url, function(data) {
+						commitsData = data;
+						displayCommitersRole(commitsData);
+					});
+				}
+			}
+
+			function displayCommitsDate(data) {
+				$('#recentCommits').html('');
+
+				var nest = d3.nest()
+					.key(function(d) { return d.commit.committer.date.toString().substring(0, 10); })
+					.entries(data);
+
+				nest.sort(function(a, b) {
+					return b.key - a.key;
+				});
+
+				var width = 960,
+    			height = 136,
+    			cellSize = 17; // cell size
+
+    			var day = d3.time.format("%w"),
+    			week = d3.time.format("%U"),
+    			percent = d3.format(".1%"),
+    			formatSimple = d3.time.format("%Y-%m-%d");
+    			format = d3.time.format("%Y-%m-%dT%H:%M:%SZ");
+
+    			var color = d3.scale.quantize()
+    				.domain([-.05, .05])
+    				.range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
+
+    			var svg = d3.select("#recentCommits").selectAll("svg")
+					.data(d3.range(2013, 2014))
+					.enter().append("svg")
+					.attr("width", width)
+					.attr("height", height)
+					.attr("class", "RdYlGn")
+					.append("g")
+					.attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
+
+				svg.append("text")
+    				.attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+    				.style("text-anchor", "middle")
+    				.text(function(d) { return d; });
+
+    			var rect = svg.selectAll(".day")
+					.data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+					.enter().append("rect")
+					.attr("class", "day")
+					.attr("width", cellSize)
+					.attr("height", cellSize)
+					.attr("x", function(d) { return week(d) * cellSize; })
+					.attr("y", function(d) { return day(d) * cellSize; })
+					.datum(formatSimple);
+
+				rect.append("title")
+					.text(function(d) { return d; });
+
+				svg.selectAll(".month")
+    				.data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+  					.enter().append("path")
+    				.attr("class", "month")
+    				.attr("d", monthPath);
+
+    			rect.filter(function(d) {
+    					for (i = 0; i < nest.length; i++) {
+    						if (d == nest[i].key) {
+    							return true;
+    						}
+    					} 
+    					return false;
+    				})
+					.attr("class", function(d) { return "day " + "q3-11"; })
+					.select("title")
+					.text(function(d) { 
+							for (i = 0; i < nest.length; i++) {
+	    						if (d == nest[i].key) {
+	    							return d + ": " + nest[i].values.length + " commits";
+	    						}
+    						}	 
+						});
+
+    			d3.select(self.frameElement).style("height", "2910px");
+			}
+
+			function monthPath(t0) {
+				var cellSize = 17;
+
+				var day = d3.time.format("%w"),
+    				week = d3.time.format("%U"),
+    				percent = d3.format(".1%"),
+    				format = d3.time.format("%Y-%m-%d");
+
+  				var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
+      			d0 = +day(t0), w0 = +week(t0),
+      			d1 = +day(t1), w1 = +week(t1);
+  				return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
+      				+ "H" + w0 * cellSize + "V" + 7 * cellSize
+      				+ "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
+      				+ "H" + (w1 + 1) * cellSize + "V" + 0
+      				+ "H" + (w0 + 1) * cellSize + "Z";
+			}
+
+			function getCommitsDate() {
+				if (commitsData != null) {
+					displayCommitsDate(commitsData);
+				} else {
+					$.get(url, function(data) {
+						commitsData = data;
+						displayCommitsDate(commitsData);
+					});
+				}
+			}
+
+			getCommitersList();
+
+			var url = '/repositories/@owner/@repo/commits.json';
+		});
+	</script>
+}

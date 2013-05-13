@@ -1,0 +1,20 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           					controllers.Application.index()
+
+# Git Search routes
+GET		/repositories									controllers.Application.repositories()
+GET 	/repositories/search.json						controllers.Application.JSONRepositories(searchQuery: String)
+GET 	/repositories/search							controllers.Application.displayRepositories(searchQuery: String)
+
+# Git Stats display
+GET 	/repositories/:owner/:repo 						controllers.Application.displayRepository(owner: String, repo: String)
+GET		/repositories/old/:owner/:repo					controllers.Application.displayStats(owner: String, repo: String)
+GET		/repositories/:owner/:repo/contributors.json    controllers.Application.JSONContributors(owner: String, repo: String)
+GET		/repositories/:owner/:repo/commits.json    		controllers.Application.JSONCommits(owner: String, repo: String)      		
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file              						controllers.Assets.at(path="/public", file)
