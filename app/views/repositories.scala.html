@@ -1,9 +1,10 @@
-@(repositories: Seq[play.api.libs.json.JsValue])
+@(repositories: Seq[play.api.libs.json.JsValue], searchQuery: String)
 
 @import play.api.libs.json._
 
 @main("GitSearch") {
 	@if(repositories != null) {
+		<div>Repositories found for: @searchQuery</div>
 		<ul class="repositories">
 			@for(r <- repositories) {
 				<li class="repository">
@@ -20,6 +21,52 @@
 			}
 		</ul>
 	} else {
-		<div>Welcome to Git Search, use the search bar to search for GitHub projects</div>
+		<div>Welcome to Git Search, use the search bar to search for GitHub projects or take a look at the projects below:</div>
+		<ul class="repositories">
+			<li class="repository">
+				<a href="/repositories/playframework/Play20">Play20</a>
+
+				<p class="owner">playframework</p>
+				<p class="description">Play framework 2.x</p>
+
+				<ul class="stats">
+					<li class="followers">3169 followers</li>
+					<li class="forks">962 forks</li>
+				</ul>
+			</li>
+			<li class="repository">
+				<a href="/repositories/mbostock/d3">d3</a>
+
+				<p class="owner">mbostock</p>
+				<p class="description">A JavaScript visualization library for HTML and SVG.</p>
+
+				<ul class="stats">
+					<li class="followers">15256 followers</li>
+					<li class="forks">2697 forks</li>
+				</ul>
+			</li>
+			<li class="repository">
+				<a href="/repositories/jquery/jquery">jquery</a>
+
+				<p class="owner">jquery</p>
+				<p class="description">jQuery JavaScript Library</p>
+
+				<ul class="stats">
+					<li class="followers">20927 followers</li>
+					<li class="forks">3991 forks</li>
+				</ul>
+			</li>
+			<li class="repository">
+				<a href="/repositories/guillaumebort/play2-sublimetext2">play2-sublimetext2</a>
+
+				<p class="owner">guillaumebort</p>
+				<p class="description">Sublime text 2 bundle for Play 2</p>
+
+				<ul class="stats">
+					<li class="followers">128 followers</li>
+					<li class="forks">16 forks</li>
+				</ul>
+			</li>
+		</ul>
 	}
 }

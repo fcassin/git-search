@@ -25,7 +25,7 @@ object Application extends Controller {
   }
 
   def repositories = Action {
-  	Ok(views.html.repositories(null))
+  	Ok(views.html.repositories(null, null))
   }
 
   def displayRepositories(searchQuery: String) = Action {
@@ -35,11 +35,11 @@ object Application extends Controller {
       val maybeJSon: Option[JsArray] = Cache.getAs[JsArray](url)
       if (maybeJSon isDefined) {
         val jsArray = maybeJSon.map(data => data.as[JsArray].value)
-        Future(Ok(views.html.repositories(jsArray getOrElse null)))  
+        Future(Ok(views.html.repositories(jsArray getOrElse null, searchQuery)))  
       } else {
         WSHelper.getRepositories(url).map { jsArray =>
             Cache.set(url, jsArray, 10800)
-            Ok(views.html.repositories(jsArray.value))
+            Ok(views.html.repositories(jsArray.value, searchQuery))
           }
       }
   	}
@@ -98,12 +98,6 @@ object Application extends Controller {
             Ok(jsArray)
           }
       }
-
-      /*val contributorsData = WS.url("https://api.github.com/repos/" + owner + "/" + repo + "/contributors").get()
-      contributorsData.map { response =>
-        val responseJson = response.json.as[JsArray]
-        Ok(responseJson)
-      }*/
     }
   }
 
@@ -123,12 +117,6 @@ object Application extends Controller {
             Ok(jsArray)
           }
       }
-
-      /*val contributorsData = WS.url("https://api.github.com/repos/" + owner + "/" + repo + "/commits?per_page=100").get()
-      contributorsData.map { response =>
-        val responseJson = response.json.as[JsArray]
-        Ok(responseJson)
-      }*/
     }
   }
 
@@ -158,54 +146,4 @@ object Application extends Controller {
           }
       })
   }
-    /*Async {
-      val repoData: Future[Response] = WS.url("https://api.github.com/repo/" + owner + "/" + "repo").get()
-      repoData.map { response =>
-        val responseJson = response.json.as[JsObject]
-        val contributorsUrl = (responseJson \ "contributors_url").asOpt[String]
-
-        val contributorsData: Future[Response] = WS.url(contributorsUrl.get)get()
-        contributorsData.map {
-          response =>
-            val responseJson = response.json.as[JsArray].value
-            Ok(views.html.stats(responseJson))
-        }
-      }*/
-
-
-      /*contributorsUrl onComplete {
-        case Success(url) => {
-          val contributorsData: Future[Response] = WS.url(url.get)get()
-          contributorsData.map {
-            response =>
-            val responseJson = response.json.as[JsArray].value
-            Ok(views.html.stats(responseJson))
-          }
-        }
-        case Failure(e) => InternalServerError("Unable to contact GitHub. " + e.getMessage())
-      }*/
-
-    
-
-    
-      /*val result = contributors.onComplete {
-       case Success(contributors) => Ok(views.html.stats(contributors))
-       case Failure(e) => InternalServerError("Unable to contact GitHub. " + e.getMessage())
-      }
-      
-      Async(result)*/
-
-      
-       
-
-
-      /*contributors.onSuccess {
-        case futureCont => Ok(views.html.stats(futureCont))
-      }
-      contributors.onFailure {
-        case error => InternalServerError("Unable to contact GitHub. " + error.getMessage())
-      }*/
-    
-  
-  
 }
