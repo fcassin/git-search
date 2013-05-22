@@ -1,0 +1,4 @@
+git-search
+==========
+
+A quick scala Play! app designed to search repositories and view recents github commits.
