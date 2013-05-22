@@ -16,8 +16,8 @@ import ExecutionContext.Implicits.global
 
 object WSHelper {
 
-  def val login = "fcassin";
-  def val password = "retycui0";
+  def login = "fcassin";
+  def password = "retycui0";
 
 	def getRepositories(url: String): Future[JsArray] = {
   		val repositories: Future[Response] = WS.url(url).withAuth(login, password, com.ning.http.client.Realm.AuthScheme.BASIC).get()
