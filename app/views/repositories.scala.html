@@ -2,25 +2,25 @@
 
 @import play.api.libs.json._
 
-@main("GitSearch") {
-	@if(repositories != null) {
-		<div>Repositories found for: @searchQuery</div>
-		<ul class="repositories">
-			@for(r <- repositories) {
-				<li class="repository">
-					<a href="/repositories/@((r \ "owner").asOpt[String])/@((r \ "name").asOpt[String])">@((r \ "name").asOpt[String])</a>
+@if(repositories != null) {
+	<div>Repositories found for: @searchQuery</div>
+	<ul class="repositories">
+		@for(r <- repositories) {
+			<li class="repository">
+				<a href="/repositories/@((r \ "owner").asOpt[String])/@((r \ "name").asOpt[String])">@((r \ "name").asOpt[String])</a>
 
-					<p class="owner">@((r \ "owner").asOpt[String])</p>
-					<p class="description">@Application.shortenString((r \ "description").asOpt[String], 150)</p>
+				<p class="owner">@((r \ "owner").asOpt[String])</p>
+				<p class="description">@Application.shortenString((r \ "description").asOpt[String], 150)</p>
 
-					<ul class="stats">
-						<li class="followers">@((r \ "followers").asOpt[Long]) followers</li>
-						<li class="forks">@((r \ "forks").asOpt[Long]) forks</li>
-					</ul>
-				</li>
-			}
-		</ul>
-	} else {
+				<ul class="stats">
+					<li class="followers">@((r \ "followers").asOpt[Long]) followers</li>
+					<li class="forks">@((r \ "forks").asOpt[Long]) forks</li>
+				</ul>
+			</li>
+		}
+	</ul>
+} else {
+	@main("GitSearch") {
 		<div>Welcome to Git Search, use the search bar to search for GitHub projects or take a look at the projects below:</div>
 		<ul class="repositories">
 			<li class="repository">

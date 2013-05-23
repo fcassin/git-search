@@ -17,7 +17,7 @@
 		    <form action="/repositories/search">
 			    <label for="searchQuery">Search a repository:</label>
 			    <input type="texte" id="searchQuery" name="searchQuery" class="search"/>
-			    <input type="submit" value="Search" />
+			    <input id="submit" type="submit" value="Search" />
 		    </form>
         </header>
         <section class="content">
@@ -41,7 +41,7 @@
                     <p>Some stuff I've not yet implemented that I'd like to do:</p>
                     <ul>
                         <li>Responsive Web Design</li>
-                        <li>Auto suggest on search box</li>
+                        <li>Better Auto suggest on search box</li>
                         <li>Color change based on number of commits on a given day</li>
                     </ul>
                 </session>
@@ -49,4 +49,15 @@
         </footer>
         <div class="clear"></div>
     </body>
+    <script type="text/javascript">
+        $('#submit').hide();
+        $('#searchQuery').keyup(function() {
+            var closure = this;
+            $.get('/repositories/search?searchQuery=' + closure.value, function(data, textStatus, jqXHR) {
+                if (closure.value != "") {
+                    $("section.content").html(data);
+                }
+            });
+        });
+    </script>
 </html>

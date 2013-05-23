@@ -30,17 +30,21 @@ object Application extends Controller {
 
   def displayRepositories(searchQuery: String) = Action {
   	Async {
-      val url = "https://api.github.com/legacy/repos/search/" + searchQuery
+      val url = "https://api.github.com/legacy/repos/search/" + searchQuery.replace(" ", "%20")
 
-      val maybeJSon: Option[JsArray] = Cache.getAs[JsArray](url)
-      if (maybeJSon isDefined) {
-        val jsArray = maybeJSon.map(data => data.as[JsArray].value)
-        Future(Ok(views.html.repositories(jsArray getOrElse null, searchQuery)))  
+      if (searchQuery == "") {
+        Future(Ok(views.html.repositories(null, null)))
       } else {
-        WSHelper.getRepositories(url).map { jsArray =>
-            Cache.set(url, jsArray, 10800)
-            Ok(views.html.repositories(jsArray.value, searchQuery))
-          }
+        val maybeJSon: Option[JsArray] = Cache.getAs[JsArray](url)
+        if (maybeJSon isDefined) {
+          val jsArray = maybeJSon.map(data => data.as[JsArray].value)
+          Future(Ok(views.html.repositories(jsArray getOrElse null, searchQuery)))  
+        } else {
+          WSHelper.getRepositories(url).map { jsArray =>
+              Cache.set(url, jsArray, 10800)
+              Ok(views.html.repositories(jsArray.value, searchQuery))
+            }
+        }    
       }
   	}
   }
